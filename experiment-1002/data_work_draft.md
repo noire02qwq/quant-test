@@ -1,0 +1,21 @@
+- 参考链接：[build alpha](https://qlib.readthedocs.io/en/latest/advanced/alpha.html#reference)、[data layer](https://qlib.readthedocs.io/en/latest/component/data.html#)、[API](https://qlib.readthedocs.io/en/latest/reference/api.html)
+- 传统技术指标列表：
+    - 主图指标：EMA(5, 10, 20, 60), BOLL, SAR, KC
+    - 趋势指标：MACD, DMI, DMA, ADTM, slope_EMA(5, 10, 20, 60), DDI, DPO
+    - 超买超卖指标：CCI, KDJ, RSI, OSC
+    - 能量指标：ARBR, PSY, VR
+    - 摆动指标: ATR, MI, SRMI
+- 买入信号相关二级指标：
+    - MACD: DIF上穿DEA(金叉)且MACD柱状图为正
+    - KDJ: K上穿D(金叉)且K<=70
+    - EMA: EMA20>EMA60且该日K线为包裹EMA20的阳线
+    - SAR: 从K线上方移动至K线下方
+    - DMI: PDI上穿MDI(金叉)或ADX上穿ADXR(金叉)
+    - ADTM: ADTM上穿ADTMMA且ADTM<0.5
+    - DDI: 由负变正
+    - DPO: 由负变正
+    - OSC: OSC上穿OSCEMA
+    - SRMI: 由负变正
+    - “上穿”的详细说明：
+        - 以b上穿a为例，若交易日x-1时b-a<0，交易日x+1时b-a>0，则视作在交易日x发生“上穿”。
+        - 由于实际应用时没有当日数据无法计算最新两天的“上穿”情况，所以在后续模型输入时“上穿”有效三天，即在current日时，current-1日和current-2日的“上穿”依然有效。
