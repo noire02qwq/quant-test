@@ -67,6 +67,8 @@ class TechnicalIndicatorCalculator:
             ema_col = f"ema_{period}"
             df[ema_col] = self._ema(df["close"], period)
             df[f"{ema_col}_slope"] = df[ema_col] - df[ema_col].shift(1)
+        gap_days = df.index.to_series().diff().dt.days.sub(1)
+        df["gap_days"] = gap_days
 
         df[["boll_mid", "boll_up", "boll_low"]] = self._bollinger(df["close"], p.boll_period, p.boll_std)
         df["sar"] = self._sar(df, p.sar_step, p.sar_max)
