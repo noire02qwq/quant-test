@@ -5,11 +5,11 @@
   "random_seed": 42,
   "device": "auto",
 
-  "window_size": 120,
+  "window_size": 90,
   "label_window_days": 15,
 
   "batch_size": 64,
-  "num_epochs": 10,
+  "num_epochs": 300,
   "learning_rate": 1e-4,
 
   "model": {

@@ -409,6 +409,59 @@ def prepare_splits(df: pd.DataFrame, cfg: Dict, window_size: int) -> Tuple[Windo
     return ds_train, ds_val, ds_test, feature_cols
 
 
+# ============== 标准化工具（仅在独立实验内部使用） ==============
+
+def compute_scaler(df: pd.DataFrame, feature_cols: List[str]) -> Dict[str, np.ndarray]:
+    """基于训练集计算特征均值/标准差。"""
+    feats = df[feature_cols].astype(np.float32)
+    mean = feats.mean(axis=0).values
+    std = feats.std(axis=0, ddof=0).values
+    std = np.where(std < 1e-8, 1.0, std)
+    return {"mean": mean, "std": std, "cols": feature_cols}
+
+
+def apply_scaler(df: pd.DataFrame, scaler: Dict[str, np.ndarray]) -> pd.DataFrame:
+    """对指定列进行 z-score 标准化。"""
+    cols = scaler["cols"]
+    mean = scaler["mean"]
+    std = scaler["std"]
+    X = df[cols].astype(np.float32).values
+    X = (X - mean) / std
+    out = df.copy()
+    out[cols] = X
+    return out
+
+
+def prepare_frames(df: pd.DataFrame, cfg: Dict) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, List[str]]:
+    """返回切分后的 DataFrame（含特征与标签），便于外部先做标准化再构建 Dataset。"""
+    feat_df = compute_features(df)
+    labels = compute_labels_long(feat_df, window_days=int(cfg["label_window_days"]))
+    feat_df = feat_df.assign(label=labels)
+
+    def _clip(df_in: pd.DataFrame, start: str, end: str) -> pd.DataFrame:
+        return df_in.loc[pd.Timestamp(start) : pd.Timestamp(end)].copy()
+
+    train_df = _clip(feat_df, cfg["splits"]["train"][0], cfg["splits"]["train"][1])
+    val_df = _clip(feat_df, cfg["splits"]["val"][0], cfg["splits"]["val"][1])
+    test_df = _clip(feat_df, cfg["splits"]["test"][0], cfg["splits"]["test"][1])
+
+    feature_cols = [
+        "open", "high", "low", "close", "volume", "ret",
+        "ema_5", "ema_10", "ema_20", "ema_60",
+        "ema_5_slope", "ema_10_slope", "ema_20_slope", "ema_60_slope",
+        "boll_mid", "boll_up", "boll_low",
+        "sar", "kc_mid", "kc_up", "kc_low",
+        "macd_dif", "macd_dea", "macd_hist",
+        "pdi", "mdi", "adx", "adxr", "dma", "ama",
+        "adtm", "adtmma", "cci", "kdj_k", "kdj_d", "kdj_j", "rsi",
+        "ar", "br", "psy", "vr",
+        "atr", "mi", "srmi",
+        "ddi", "ddi_dmz", "ddi_dmf", "dpo", "osc", "osc_signal",
+        "gap_days",
+    ]
+    return train_df, val_df, test_df, feature_cols
+
+
 def make_loaders(ds_train: Dataset, ds_val: Dataset, ds_test: Dataset, batch_size: int) -> Tuple[DataLoader, DataLoader, DataLoader]:
     train_loader = DataLoader(ds_train, batch_size=batch_size, shuffle=True, drop_last=False)
     val_loader = DataLoader(ds_val, batch_size=batch_size, shuffle=False, drop_last=False)
