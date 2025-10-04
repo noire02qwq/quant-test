@@ -334,7 +334,7 @@ class WindowDataset(Dataset):
             if not np.isfinite(window).all():
                 continue
             X_list.append(window)
-            y_list.append(int(labels[i] + 1))  # 将 {-1,0,1} 映射到 {0,1,2}
+            y_list.append(int(labels[i]))  # 直接使用标签值（本实验二分类 0/1）
             i_list.append(idxs[i])
         X = torch.from_numpy(np.stack(X_list, axis=0))
         y = torch.from_numpy(np.array(y_list, dtype=np.int64))
@@ -366,7 +366,9 @@ def prepare_splits(df: pd.DataFrame, cfg: Dict, window_size: int) -> Tuple[Windo
 
     feat_df = compute_features(df)
     labels = compute_labels_long(feat_df, window_days=int(cfg["label_window_days"]))
-    feat_df = feat_df.assign(label=labels)
+    # 将多分类标签（-1/0/1）转换为二分类：胜=1，其余（0或-1）=0
+    label_bin = (labels == 1).astype(int)
+    feat_df = feat_df.assign(label=label_bin)
 
     # 按日期切分
     def _clip(df_in: pd.DataFrame, start: str, end: str) -> pd.DataFrame:
@@ -436,7 +438,15 @@ def prepare_frames(df: pd.DataFrame, cfg: Dict) -> Tuple[pd.DataFrame, pd.DataFr
     """返回切分后的 DataFrame（含特征与标签），便于外部先做标准化再构建 Dataset。"""
     feat_df = compute_features(df)
     labels = compute_labels_long(feat_df, window_days=int(cfg["label_window_days"]))
-    feat_df = feat_df.assign(label=labels)
+    # 根据配置切换二分类或三分类标签
+    mode = str(cfg.get("label_mode", "binary")).lower()
+    if mode == "binary":
+        # 胜=1，非胜(0/-1)=0；保持为浮点，留给 WindowDataset 过滤 NaN
+        label_idx = (labels == 1).astype(float)
+    else:
+        # 多分类：{-1,0,1}->{0,1,2}，保持为浮点，留给 WindowDataset 过滤 NaN
+        label_idx = labels.map({-1.0: 0.0, 0.0: 1.0, 1.0: 2.0})
+    feat_df = feat_df.assign(label=label_idx)
 
     def _clip(df_in: pd.DataFrame, start: str, end: str) -> pd.DataFrame:
         return df_in.loc[pd.Timestamp(start) : pd.Timestamp(end)].copy()

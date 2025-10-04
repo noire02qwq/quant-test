@@ -12,7 +12,15 @@ import torch
 import torch.nn as nn
 from torch.optim import AdamW
 
-from data import load_dataframe, prepare_splits, make_loaders
+from data import (
+    load_dataframe,
+    prepare_frames,
+    compute_scaler,
+    apply_scaler,
+    SeriesConfig,
+    WindowDataset,
+    make_loaders,
+)
 from model import TimeSeriesTransformer
 
 
@@ -58,28 +66,51 @@ def main() -> None:
     out_dir = Path(cfg["output_dir"]) / "models"
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    # 加载数据并切分
+    # 加载数据并切分（先构建特征与标签，再基于训练集标准化）
     df = load_dataframe(data_path, index_col=cfg.get("index_col", "datetime"))
-    ds_train, ds_val, ds_test, feature_cols = prepare_splits(df, cfg, window_size=int(cfg["window_size"]))
+    train_df, val_df, test_df, feature_cols = prepare_frames(df, cfg)
+    scaler = compute_scaler(train_df, feature_cols)
+    train_df = apply_scaler(train_df, scaler)
+    val_df = apply_scaler(val_df, scaler)
+    test_df = apply_scaler(test_df, scaler)
+    series_cfg = SeriesConfig(window_size=int(cfg["window_size"]), feature_cols=feature_cols)
+    ds_train = WindowDataset(train_df, series_cfg)
+    ds_val = WindowDataset(val_df, series_cfg)
+    ds_test = WindowDataset(test_df, series_cfg)
     train_loader, val_loader, _ = make_loaders(ds_train, ds_val, ds_test, batch_size=int(cfg["batch_size"]))
 
     # 构建模型
     model_cfg = cfg["model"]
+    # 根据 label_mode 选择类别数
+    label_mode = str(cfg.get("label_mode", "binary")).lower()
+    num_classes = 2 if label_mode == "binary" else 3
     model = TimeSeriesTransformer(
         feature_dim=len(feature_cols),
-        d_model=int(model_cfg["d_model"]),
-        nhead=int(model_cfg["nhead"]),
-        num_layers=int(model_cfg["num_layers"]),
-        dim_feedforward=int(model_cfg["dim_feedforward"]),
-        dropout=float(model_cfg["dropout"]),
+        d_model=int(model_cfg.get("d_model", 128)),
+        nhead=int(model_cfg.get("nhead", 4)),
+        num_layers=int(model_cfg.get("num_layers", 4)),
+        dim_feedforward=int(model_cfg.get("dim_feedforward", 256)),
+        dropout=float(model_cfg.get("dropout", 0.1)),
         pooling=str(model_cfg.get("pooling", "mean")),
-        num_classes=3,
+        num_classes=num_classes,
+        norm_first=bool(model_cfg.get("norm_first", True)),
+        embedding_dropout=float(model_cfg.get("embedding_dropout", 0.05)),
     ).to(device)
 
     optimizer = AdamW(model.parameters(), lr=float(cfg["learning_rate"]))
-    criterion = nn.CrossEntropyLoss()
+    # 类别不平衡：使用训练集分布计算权重（确保 1D int64 非负，二分类）
+    labels = ds_train.y
+    if not torch.is_tensor(labels):
+        labels = torch.tensor(labels)
+    labels = labels.view(-1).long().clamp_min(0)
+    class_counts = torch.bincount(labels, minlength=num_classes).float()
+    class_counts = class_counts.clamp(min=1.0)
+    weights = (class_counts.sum() / (class_counts.numel() * class_counts)).to(device)
+    criterion = nn.CrossEntropyLoss(weight=weights)
 
     best_f1 = -1.0
+    best_acc = -1.0
+    best_path = None
     num_epochs = int(cfg["num_epochs"])
     for epoch in range(1, num_epochs + 1):
         model.train()
@@ -111,20 +142,52 @@ def main() -> None:
         y_true = torch.cat(all_y)
         y_pred = torch.cat(all_p)
         val_acc = accuracy(y_true, y_pred)
-        val_f1 = macro_f1(y_true, y_pred)
+        val_f1 = macro_f1(y_true, y_pred, num_classes=num_classes)
 
         print(f"Epoch {epoch:03d} | train_loss={avg_loss:.4f} | val_acc={val_acc:.4f} | val_f1={val_f1:.4f}")
 
         # 保存最优
         if val_f1 > best_f1:
             best_f1 = val_f1
+            best_acc = val_acc
             save_path = out_dir / "best.pt"
             torch.save({
                 "state_dict": model.state_dict(),
                 "feature_cols": feature_cols,
                 "config": cfg,
+                "scaler": scaler,
+                "epoch": epoch,
+                "val_acc": val_acc,
+                "val_f1": val_f1,
             }, save_path)
+            best_path = save_path
             print(f"Saved best model to {save_path}")
+
+        # 每 10 个 epoch 保存一次检查点
+        if epoch % 10 == 0:
+            ckpt_path = out_dir / f"transformer_epoch_{epoch}.pt"
+            torch.save({
+                "state_dict": model.state_dict(),
+                "feature_cols": feature_cols,
+                "config": cfg,
+                "scaler": scaler,
+                "epoch": epoch,
+                "val_acc": val_acc,
+                "val_f1": val_f1,
+            }, ckpt_path)
+            print(f"Saved periodic checkpoint: {ckpt_path}")
+
+    # 训练结束统计打印
+    total_params = sum(p.numel() for p in model.parameters())
+    trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    print({
+        "final_epoch": num_epochs,
+        "final_params_total": total_params,
+        "final_params_trainable": trainable_params,
+        "best_val_acc": best_acc,
+        "best_val_f1": best_f1,
+        "best_checkpoint": str(best_path) if best_path else None,
+    })
 
 
 if __name__ == "__main__":

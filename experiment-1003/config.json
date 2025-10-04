@@ -5,25 +5,28 @@
   "random_seed": 42,
   "device": "auto",
 
-  "window_size": 90,
+  "window_size": 120,
   "label_window_days": 15,
+  "label_mode": "multiclass",
 
   "batch_size": 64,
-  "num_epochs": 300,
-  "learning_rate": 1e-4,
+  "num_epochs": 400,
+  "learning_rate": 5e-4,
 
   "model": {
-    "d_model": 128,
+    "d_model": 256,
     "nhead": 4,
-    "num_layers": 3,
-    "dim_feedforward": 256,
-    "dropout": 0.1,
-    "pooling": "mean"
+    "num_layers": 16,
+    "dim_feedforward": 512,
+    "dropout": 0.4,
+    "pooling": "mean",
+    "norm_first": true,
+    "embedding_dropout": 0.2
   },
 
   "splits": {
-    "train": ["2014-01-01", "2020-12-31"],
-    "val":   ["2021-01-01", "2022-12-31"],
-    "test":  ["2023-01-01", "2024-12-31"]
+    "train": ["2014-01-01", "2022-12-31"],
+    "val":   ["2023-01-01", "2023-12-31"],
+    "test":  ["2024-01-01", "2024-12-31"]
   }
 }
