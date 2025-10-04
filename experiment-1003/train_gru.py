@@ -74,6 +74,19 @@ def main() -> None:
     ds_test = WindowDataset(test_df, series_cfg)
     train_loader, val_loader, _ = make_loaders(ds_train, ds_val, ds_test, batch_size=int(cfg["batch_size"]))
 
+    # 训练前输出：单时刻输入向量的维度与示例大小
+    feature_dim = len(feature_cols)
+    window_size = int(cfg["window_size"])
+    print({
+        "info": "model input spec",
+        "per_timestep_vector_dim": feature_dim,
+        "window_size": window_size,
+        "example_input_shape": [1, window_size, feature_dim],
+    })
+
+    # 动态类别数：二分类/三分类
+    label_mode = str(cfg.get("label_mode", "binary")).lower()
+    num_classes = 2 if label_mode == "binary" else 3
     model = GRUClassifier(
         feature_dim=len(feature_cols),
         hidden_size=256,
@@ -81,14 +94,18 @@ def main() -> None:
         dropout=0.1,
         bidirectional=False,
         pooling="last",
-        num_classes=3,
+        num_classes=num_classes,
     ).to(device)
 
     optimizer = AdamW(model.parameters(), lr=float(cfg["learning_rate"]))
-    # 类别不平衡：基于训练集 y 分布设置权重
-    class_counts = torch.bincount(ds_train.y)
-    class_counts = class_counts.float().clamp(min=1.0)
-    weights = (class_counts.sum() / (len(class_counts) * class_counts))
+    # 类别不平衡：基于训练集 y 分布设置权重（确保 1D int64 非负，固定二分类长度）
+    labels = ds_train.y
+    if not torch.is_tensor(labels):
+        labels = torch.tensor(labels)
+    labels = labels.view(-1).long().clamp_min(0)
+    class_counts = torch.bincount(labels, minlength=num_classes).float()
+    class_counts = class_counts.clamp(min=1.0)
+    weights = class_counts.sum() / (class_counts.numel() * class_counts)
     criterion = nn.CrossEntropyLoss(weight=weights.to(device))
 
     best_f1 = -1.0
@@ -123,7 +140,7 @@ def main() -> None:
         y_true = torch.cat(all_y)
         y_pred = torch.cat(all_p)
         val_acc = accuracy(y_true, y_pred)
-        val_f1 = macro_f1(y_true, y_pred)
+        val_f1 = macro_f1(y_true, y_pred, num_classes=num_classes)
         print(f"[GRU] Epoch {epoch:03d} | train_loss={avg_loss:.4f} | val_acc={val_acc:.4f} | val_f1={val_f1:.4f}")
 
         if val_f1 > best_f1:

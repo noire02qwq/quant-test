@@ -29,10 +29,10 @@ class GRUClassifier(nn.Module):
         self,
         feature_dim: int,
         hidden_size: int = 4096,
-        num_layers: int = 12,
-        dropout: float = 0.3,
+        num_layers: int = 64,
+        dropout: float = 0.25,
         bidirectional: bool = False,
-        pooling: str = "last",
+        pooling: str = "mean",
         num_classes: int = 3,
     ) -> None:
         super().__init__()
@@ -48,7 +48,7 @@ class GRUClassifier(nn.Module):
         out_dim = hidden_size * (2 if bidirectional else 1)
         self.norm = nn.LayerNorm(out_dim)
         self.head = nn.Sequential(
-            nn.Linear(out_dim, out_dim), nn.Sigmoid(), nn.Dropout(dropout), nn.Linear(out_dim, num_classes)
+            nn.Linear(out_dim, out_dim), nn.ELU(), nn.Dropout(dropout), nn.Linear(out_dim, num_classes)
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -82,6 +82,11 @@ def main() -> None:
     _, _, _, feature_cols = prepare_splits(df, cfg, window_size=int(cfg["window_size"]))
 
     model = GRUClassifier(feature_dim=len(feature_cols))
+    print({
+        "info": "model input spec",
+        "per_timestep_vector_dim": len(feature_cols),
+        "example_input_shape": [1, int(cfg["window_size"]), len(feature_cols)],
+    })
     print(model)
     total, trainable = _count_params(model)
     print({"feature_dim": len(feature_cols), "total_params": total, "trainable_params": trainable})
@@ -89,4 +94,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
