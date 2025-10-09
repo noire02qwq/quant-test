@@ -19,6 +19,7 @@ EXPERIMENT_ROOT = Path(__file__).resolve().parent
 DATA_ROOT = EXPERIMENT_ROOT / "data"
 RAW_DIR = DATA_ROOT / "raw"
 QLIB_DIR = DATA_ROOT / "qlib"
+DEFAULT_SYMBOLS: Tuple[str, ...] = ("TSM", "JPM", "MSFT", "AMZN", "IBM")
 
 
 def load_raw_frame(symbol: str = "TSM") -> pd.DataFrame:
@@ -562,39 +563,53 @@ def compute_alpha_features(df: pd.DataFrame, kind: str) -> pd.DataFrame:
     return pd.DataFrame(feature_dict, index=df.index)
 
 
-def prepare_feature_dataframe(feature_mode: str, symbol: str = "TSM") -> pd.DataFrame:
-    """根据指定模式生成特征与回归标签。"""
+def prepare_feature_dataframe(feature_mode: str, symbols: Sequence[str] | None = None) -> pd.DataFrame:
+    """根据指定模式生成多标的特征与回归标签。"""
 
-    raw = load_raw_frame(symbol=symbol)
-    traditional = compute_traditional_indicators(raw)
-    labels = compute_regression_labels(traditional).rename("label")
+    symbol_list = list(symbols) if symbols else list(DEFAULT_SYMBOLS)
+    frames: List[pd.DataFrame] = []
 
-    base_cols = ["open", "high", "low", "close", "volume", "vwap", "ret"]
-    base_df = traditional[base_cols].copy()
+    for symbol in symbol_list:
+        raw = load_raw_frame(symbol=symbol)
+        traditional = compute_traditional_indicators(raw)
+        labels = compute_regression_labels(traditional).rename("label")
 
-    mode = feature_mode.lower()
-    if mode == "raw_traditional":
-        feature_df = traditional.copy()
-    elif mode == "raw_secondary":
-        with_signals = compute_secondary_signals(traditional)
-        signal_cols = [col for col in with_signals.columns if col.startswith("signal_")]
-        feature_df = pd.concat([base_df, with_signals[signal_cols]], axis=1)
-    elif mode in {"raw_alpha158", "raw_alpha360"}:
-        alpha_kind = "alpha158" if mode.endswith("158") else "alpha360"
-        alpha_source = traditional[["open", "high", "low", "close", "volume", "vwap", "ret"]].copy()
-        alpha_features = compute_alpha_features(alpha_source, alpha_kind)
-        feature_df = pd.concat([base_df, alpha_features], axis=1)
-    else:
-        raise ValueError(f"不支持的特征模式：{feature_mode}")
+        base_cols = ["open", "high", "low", "close", "volume", "vwap", "ret"]
+        base_df = traditional[base_cols].copy()
 
-    for col in feature_df.columns:
-        if feature_df[col].dtype == bool:
-            feature_df[col] = feature_df[col].astype(float)
+        mode = feature_mode.lower()
+        if mode == "raw_traditional":
+            feature_df = traditional.copy()
+        elif mode == "raw_secondary":
+            with_signals = compute_secondary_signals(traditional)
+            signal_cols = [col for col in with_signals.columns if col.startswith("signal_")]
+            feature_df = pd.concat([base_df, with_signals[signal_cols]], axis=1)
+        elif mode in {"raw_alpha158", "raw_alpha360"}:
+            alpha_kind = "alpha158" if mode.endswith("158") else "alpha360"
+            alpha_source = traditional[["open", "high", "low", "close", "volume", "vwap", "ret"]].copy()
+            alpha_features = compute_alpha_features(alpha_source, alpha_kind)
+            feature_df = pd.concat([base_df, alpha_features], axis=1)
+        else:
+            raise ValueError(f"不支持的特征模式：{feature_mode}")
 
-    dataset = feature_df.join(labels, how="inner")
-    dataset = dataset.dropna(axis=0, how="any")
-    dataset = dataset.sort_index()
-    return dataset
+        for col in feature_df.columns:
+            if feature_df[col].dtype == bool:
+                feature_df[col] = feature_df[col].astype(float)
+
+        dataset = feature_df.join(labels, how="inner")
+        dataset = dataset.dropna(axis=0, how="any")
+        dataset = dataset.sort_index()
+        if dataset.empty:
+            continue
+        dataset = dataset.reset_index().rename(columns={"index": "date"})
+        dataset["symbol"] = symbol
+        frames.append(dataset)
+
+    if not frames:
+        raise ValueError("所有标的的数据均为空，请检查数据准备流程。")
+
+    combined = pd.concat(frames, axis=0).sort_values(["symbol", "date"]).reset_index(drop=True)
+    return combined
 
 
 def split_by_date(df: pd.DataFrame, splits: Mapping[str, Sequence[str]]) -> Dict[str, pd.DataFrame]:
@@ -602,7 +617,14 @@ def split_by_date(df: pd.DataFrame, splits: Mapping[str, Sequence[str]]) -> Dict
     for split_name, (start, end) in splits.items():
         start_ts = pd.Timestamp(start)
         end_ts = pd.Timestamp(end)
-        clip = df.loc[start_ts:end_ts].copy()
+        if "date" not in df.columns:
+            raise KeyError("数据集中缺少 'date' 列，无法按日期切分。")
+        mask = (df["date"] >= start_ts) & (df["date"] <= end_ts)
+        clip = df.loc[mask].copy()
+        if not clip.empty:
+            sort_keys = [col for col in ["symbol", "date"] if col in clip.columns]
+            if sort_keys:
+                clip = clip.sort_values(sort_keys)
         result[split_name] = clip
     return result
 
@@ -639,8 +661,13 @@ def apply_scaler(df: pd.DataFrame, scaler: ScalerState) -> pd.DataFrame:
     features = df[scaler.mean.index]
     scaled = (features - scaler.mean) / scaler.std
     scaled = scaled.astype(np.float32)
-    scaled["label"] = df["label"].astype(np.float32)
-    return scaled
+    scaled_df = scaled.copy()
+    scaled_df["label"] = df["label"].astype(np.float32)
+    if "symbol" in df.columns:
+        scaled_df["symbol"] = df["symbol"].values
+    if "date" in df.columns:
+        scaled_df["date"] = df["date"].values
+    return scaled_df
 
 
 class SlidingWindowDataset(Dataset):
@@ -649,24 +676,33 @@ class SlidingWindowDataset(Dataset):
     def __init__(self, frame: pd.DataFrame, feature_cols: Sequence[str], window_size: int) -> None:
         self.feature_cols = list(feature_cols)
         self.window = int(window_size)
-        values = frame[self.feature_cols].to_numpy(dtype=np.float32)
-        labels = frame["label"].to_numpy(dtype=np.float32)
-        dates = frame.index.to_numpy()
+        frame_local = frame.copy()
+        if "symbol" not in frame_local.columns:
+            frame_local = frame_local.assign(symbol="UNKNOWN")
+        if "date" not in frame_local.columns:
+            frame_local = frame_local.assign(date=frame_local.index)
 
         samples: List[np.ndarray] = []
         targets: List[float] = []
         self.timestamps: List[pd.Timestamp] = []
+        self.symbols: List[str] = []
 
-        for idx in range(self.window - 1, len(frame)):
-            window_slice = values[idx - self.window + 1 : idx + 1]
-            if not np.isfinite(window_slice).all():
-                continue
-            target = labels[idx]
-            if not np.isfinite(target):
-                continue
-            samples.append(window_slice)
-            targets.append(float(target))
-            self.timestamps.append(pd.Timestamp(dates[idx]))
+        for symbol, sdf in frame_local.groupby("symbol"):
+            sdf = sdf.sort_values("date")
+            values = sdf[self.feature_cols].to_numpy(dtype=np.float32)
+            labels = sdf["label"].to_numpy(dtype=np.float32)
+            dates = sdf["date"].to_numpy()
+            for idx in range(self.window - 1, len(sdf)):
+                window_slice = values[idx - self.window + 1 : idx + 1]
+                if not np.isfinite(window_slice).all():
+                    continue
+                target = labels[idx]
+                if not np.isfinite(target):
+                    continue
+                samples.append(window_slice)
+                targets.append(float(target))
+                self.timestamps.append(pd.Timestamp(dates[idx]))
+                self.symbols.append(str(symbol))
 
         if samples:
             self.X = torch.from_numpy(np.stack(samples, axis=0))
@@ -675,6 +711,7 @@ class SlidingWindowDataset(Dataset):
             self.X = torch.empty((0, self.window, len(self.feature_cols)), dtype=torch.float32)
             self.y = torch.empty((0, 1), dtype=torch.float32)
             self.timestamps = []
+            self.symbols = []
 
     def __len__(self) -> int:  # type: ignore[override]
         return self.X.shape[0]
@@ -719,4 +756,5 @@ __all__ = [
     "save_scaler",
     "load_scaler",
     "ScalerState",
+    "DEFAULT_SYMBOLS",
 ]

@@ -16,3 +16,6 @@
     - (5) 原始序列+(1)(2)中表现更优者+(3)(4)中表现更优者
     - (1)(2)中更优者、(3)(4)中更优者、(5)，三者挑出最优者做最终方案
 - 选择模型：transformer(encoder only)，跑通后尝试gru, dlinear
+    - transformer
+        - window=110, batch=160, low mse
+        - window=100, batch=176, low mae
