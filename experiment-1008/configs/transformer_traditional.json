@@ -1,0 +1,28 @@
+{
+  "feature_mode": "raw_alpha158",
+  "window_size": 100,
+  "batch_size": 160,
+  "num_workers": 0,
+  "splits": {
+    "train": ["2015-01-01", "2022-12-31"],
+    "val": ["2023-01-01", "2023-12-31"],
+    "test": ["2024-01-01", "2024-12-31"]
+  },
+  "learning_rate": 0.0006,
+  "weight_decay": 0.00001,
+  "epochs": 100,
+  "grad_clip": 1.0,
+  "checkpoint_every": 5,
+  "output_dir": "experiment-1008/outputs/transformer_traditional",
+  "model": {
+    "name": "transformer",
+    "params": {
+      "d_model": 256,
+      "nhead": 4,
+      "num_layers": 8,
+      "dim_feedforward": 512,
+      "dropout": 0.5,
+      "pooling": "mean"
+    }
+  }
+}

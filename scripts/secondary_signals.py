@@ -95,6 +95,14 @@ def compute_secondary_signals(df: pd.DataFrame) -> pd.DataFrame:
     srmi_cross = (srmi_series.shift(1) < 0) & (srmi_series.shift(-1) > 0)
     signals["signal_srmi"] = srmi_cross
 
+    # 收盘价站上布林线上轨
+    boll_close_break = (df["close"] > df["boll_up"]).fillna(False)
+    signals["signal_boll_close_break"] = boll_close_break
+
+    # 开盘价跌破布林线下轨
+    boll_open_break = (df["open"] < df["boll_low"]).fillna(False)
+    signals["signal_boll_open_break"] = boll_open_break
+
     return pd.concat([df, signals], axis=1)
 
 
@@ -114,10 +122,10 @@ def _find_segments(signal: pd.Series) -> List[Tuple[int, int]]:
     return segments
 
 
-def plot_with_signals(df: pd.DataFrame, ema_columns: Iterable[str]) -> Tuple[plt.Figure, plt.Axes, List[Rectangle]]:
-    """绘制 K 线与 EMA，并以半透明背景标注二级信号。"""
+def plot_with_signals(df: pd.DataFrame) -> Tuple[plt.Figure, plt.Axes, List[Rectangle]]:
+    """绘制 K 线与布林带，并以半透明背景标注二级信号。"""
 
-    required_cols = list(ema_columns) + ["open", "high", "low", "close"]
+    required_cols = ["open", "high", "low", "close", "boll_mid", "boll_up", "boll_low"]
     df_plot = df.dropna(subset=required_cols).copy()
     if df_plot.empty:
         raise ValueError("有效数据为空，无法绘图，请检查时间区间或指标窗口。")
@@ -133,6 +141,8 @@ def plot_with_signals(df: pd.DataFrame, ema_columns: Iterable[str]) -> Tuple[plt
         "signal_dpo": ("DPO Positive", "#7209b7"),
         "signal_osc": ("OSC Cross", "#ff9f1c"),
         "signal_srmi": ("SRMI Positive", "#2ec4b6"),
+        "signal_boll_close_break": ("Close > BOLL Upper", "#ff6f59"),
+        "signal_boll_open_break": ("Open < BOLL Lower", "#6a4c93"),
     }
 
     positions = np.arange(len(df_plot))
@@ -148,9 +158,10 @@ def plot_with_signals(df: pd.DataFrame, ema_columns: Iterable[str]) -> Tuple[plt
         candle = Rectangle((idx - candle_width / 2, lower), candle_width, height, edgecolor=color, facecolor=color)
         ax_price.add_patch(candle)
 
-    # 绘制 EMA 曲线
-    for ema_col in ema_columns:
-        ax_price.plot(positions, df_plot[ema_col], label=ema_col.upper())
+    # 绘制布林带
+    ax_price.plot(positions, df_plot["boll_mid"], label="BOLL MID", linestyle="--", color="#6c757d")
+    ax_price.plot(positions, df_plot["boll_up"], label="BOLL UP", linestyle=":", color="#adb5bd")
+    ax_price.plot(positions, df_plot["boll_low"], label="BOLL LOW", linestyle=":", color="#adb5bd")
 
     ax_price.set_title("TSM Daily OHLC with Secondary Signals")
     ax_price.set_ylabel("Price")
@@ -222,8 +233,7 @@ def main() -> None:
     indicator_df = calculator.compute()
     full_df = compute_secondary_signals(indicator_df)
 
-    ema_cols = [f"ema_{p}" for p in calculator.params.ema_periods]
-    fig, ax_price, highlight_handles = plot_with_signals(full_df, ema_cols)
+    fig, ax_price, highlight_handles = plot_with_signals(full_df)
     save_chart_and_legend(fig, ax_price, highlight_handles, OUTPUT_DIR)
 
     plt.close(fig)

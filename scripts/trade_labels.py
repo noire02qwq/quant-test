@@ -176,12 +176,12 @@ def main() -> None:
     qlib.init(provider_uri=str(DATA_DIR), region=REG_US)
 
     symbol = "TSM"
-    plot_start = pd.Timestamp("2024-09-15")
-    plot_end = pd.Timestamp("2025-09-15")
+    plot_start = pd.Timestamp("2024-01-01")
+    plot_end = pd.Timestamp("2024-12-31")
 
-    max_window = 15
-    start_buffer = 60
-    forward_buffer = 30
+    max_window = 20
+    start_buffer = 80
+    forward_buffer = 45
 
     fetch_start = (plot_start - pd.Timedelta(days=start_buffer)).strftime("%Y-%m-%d")
     fetch_end = (plot_end + pd.Timedelta(days=forward_buffer)).strftime("%Y-%m-%d")
@@ -190,7 +190,7 @@ def main() -> None:
     calculator = TechnicalIndicatorCalculator(price_df, IndicatorParams())
     indicator_df = calculator.compute()
 
-    long_labels = _calculate_labels(indicator_df, window_days=15, stop_loss_mult=2.0, stop_gain_mult=3.0)
+    long_labels = _calculate_labels(indicator_df, window_days=20, stop_loss_mult=2.0, stop_gain_mult=3.0)
     short_labels = _calculate_labels(indicator_df, window_days=5, stop_loss_mult=1.0, stop_gain_mult=1.5)
 
     combined = indicator_df.assign(long_label=long_labels, short_label=short_labels)
