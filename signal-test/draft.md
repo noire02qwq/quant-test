@@ -1,0 +1,39 @@
+- 独立实验 测试信号的效果 仅在该文件夹内操作
+- 标的池
+    - **科技**: NVDA, TSM, AAPL, MSFT, GOOGL, AMZN, SAP, ANET, AVGO, IBM, TSLA, PLTR, ADP, ALAB, ADI, TXN, MU, QCOM, ARM, SNDK, RELX, IONQ
+    - **金融**: JPM, MS, KKR, MAIN, V, AXP, PGR, ICE, BN, SPGI, BX, NDAQ, ARES, STT
+    - **传统消费与工业**: ABBV, CAT, RTX, VST, MNST, MCD, CVX, HWM
+    - **ADR**: DBSDY, ABBNY, TKOMY, TOELY, NTDOY, SFTBY
+- 标签：三围栏法 - 止盈/止损/持有到期，最先触碰到的分别返回1/-1/0代表胜/负/平
+    - 持有期限horizon: 5-15日，网格间隔2日
+    - 止盈/止损线:
+        - 盈亏比固定为1.5
+        - 止损线/ATR的倍数: 1-3，网格间隔0.2。比如倍数取2时，则止损线当期收盘价格-2atr，止盈线当期收盘价格+2atr
+- 信号：
+    - KDJ: K上穿D
+    - KDJ-with-trend: K上穿D且EMA5>EMA60
+    - KDJ-with-limit: K上穿D且K<50
+    - KDJ-with-limit-trend: K上穿D且K<50且EMA5>EMA60
+    - MACD: DIF上穿DEA
+    - MACD-with-trend: DIF上穿DEA且EMA5>EMA60
+    - MACD-with-limit: DIF上穿DEA且DIF<0
+    - MACD-with-trend-limit: DIF上穿DEA且DIF<0且EMA5>EMA60
+    - EMA5-10: EMA5上穿EMA10
+    - EMA5-10-with-trend: EMA5上穿EMA10且EMA5>EMA60
+    - EMA5-20: EMA5上穿EMA20
+    - EMA5-20-with-trend: EMA5上穿EMA20且EMA5>EMA60
+    - ADX-ADXR: ADX上穿ADXR
+    - ADX-ADXR-with-trend: ADX上穿ADXR且EMA5>EMA60
+    - PDI-MDI: PDI上穿MDI
+    - PDI-MDI-with-trend: PDI上穿MDI且EMA5>EMA60
+- 信号中"a上穿b的定义": 在t时a>b，且在t-2 t-3时b>a，无需计算t-1时的情况，则可看做在t时a上穿b
+- 样本: 标的池所有股票从2020-01-01到2025-08-31的日频数据，前后留足60日缓冲区以保证信号和标签能正常计算
+- 统计报告 - 一个html文档
+    - 分信号统计：文档中每个小标题对应一个信号包含以下内容
+        - 信号触发次数
+        - 胜率(信号触发时标签为1的占比)最大对应的持有期限、止损atr倍数、胜率大小
+        - 净胜次数(信号触发的标签总和，即胜-负，不计算平)最大对应的持有期限、止损atr倍数、净胜次数
+        - 信号触发demo图: TSM horizon=5 atr倍数=2的 2024-01-01到2024-12-31的K线+EMA5/10/20/60+kdj+macd图，背景用红/黄/绿/不上色代表触发信号的胜/平/负/未触发
+        - 胜率图像: 横坐标为持有期限，纵坐标为止损atr倍数，颜色代表胜率的热图，叠加一条折线显示每个持有期限上胜率最大的atr倍数
+        - 净胜次数图像: 横坐标为持有期限，纵坐标为止损atr倍数，颜色代表胜率的热图，叠加一条折线显示每个持有期限上胜率最大的atr倍数
+    - 总统计: 两个表格，每个信号取胜率最大或净胜次数最大值，降序排列显示信号名称和对应的胜率/净胜次数

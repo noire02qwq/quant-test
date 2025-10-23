@@ -7,9 +7,10 @@ coding agent在此仓库中编辑py代码时，应使用中文注释表明每一
 ## 1. 标的与长期底仓清单
 
 ### 1.1 全量标的池
-- **科技**: NVDA, TSM, AAPL, MSFT, GOOGL, AMZN, META, SAP, ANET, AVGO, IBM, TSLA, PLTR, ADP, ALAB, ADI, TXN, MU, QCOM, ARM
-- **金融**: JPM, MS, KKR, MAIN, V, AXP, PGR, ICE, BN, SPGI, BX, NDAQ, ARES  
-- **传统消费与工业**: ABBV, CAT, RTX, VST, MNST, MCD, CVX  
+   - **科技**: NVDA, TSM, AAPL, MSFT, GOOGL, AMZN, SAP, ANET, AVGO, IBM, TSLA, PLTR, ADP, ALAB, ADI, TXN, MU, QCOM, ARM, SNDK, RELX, IONQ
+   - **金融**: JPM, MS, KKR, MAIN, V, AXP, PGR, ICE, BN, SPGI, BX, NDAQ, ARES, STT
+   - **传统消费与工业**: ABBV, CAT, RTX, VST, MNST, MCD, CVX, HWM
+   - **ADR**: DBSDY, ABBNY, TKOMY, TOELY, NTDOY, SFTBY
 
 ### 1.2 长期底仓规则
 - **底仓清单**：从全量标的中预先指定 ≤15 只股票。  

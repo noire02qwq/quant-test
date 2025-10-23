@@ -28,6 +28,7 @@ from scripts.data_collector.yahoo import collector as yahoo_collector  # type: i
 from scripts.dump_bin import DumpDataAll  # type: ignore
 
 
+# 该数据类封装构建 Qlib 数据集所需的全部参数。
 @dataclass
 class DatasetConfig:
     """Configuration for the Qlib dataset build."""
@@ -48,7 +49,6 @@ class DatasetConfig:
                 "MSFT",
                 "GOOGL",
                 "AMZN",
-                "META",
                 "SAP",
                 "ANET",
                 "AVGO",
@@ -62,6 +62,9 @@ class DatasetConfig:
                 "MU",
                 "QCOM",
                 "ARM",
+                "SNDK",
+                "RELX",
+                "IONQ",
             ),
             "financial": (
                 "JPM",
@@ -77,6 +80,7 @@ class DatasetConfig:
                 "BX",
                 "NDAQ",
                 "ARES",
+                "STT",
             ),
             "industrial": (
                 "ABBV",
@@ -86,6 +90,15 @@ class DatasetConfig:
                 "MNST",
                 "MCD",
                 "CVX",
+                "HWM",
+            ),
+            "adr": (
+                "DBSDY",
+                "ABBNY",
+                "TKOMY",
+                "TOELY",
+                "NTDOY",
+                "SFTBY",
             ),
         }
     )
@@ -110,12 +123,14 @@ class DatasetConfig:
         return self.end_ts.strftime("%Y-%m-%d")
 
 
+# 该函数用于清空目录，重新准备输出路径。
 def _empty_dir(path: Path) -> None:
     if path.exists():
         shutil.rmtree(path)
     path.mkdir(parents=True, exist_ok=True)
 
 
+# 该函数用于向 qlib 的采集代码注入定制化的标的列表。
 def _patch_symbol_sources(symbols: Sequence[str]) -> None:
     """Monkey patch qlib's Yahoo collector to use the provided symbol list."""
 
@@ -137,6 +152,7 @@ def _patch_symbol_sources(symbols: Sequence[str]) -> None:
     sys.modules["collector"] = yahoo_collector  # required by BaseRun
 
 
+# 该函数用于下载原始 Yahoo CSV 数据。
 def _collect_raw_csv(cfg: DatasetConfig) -> None:
     logger.info("Downloading Yahoo daily data for %d symbols", len(cfg.symbols))
     run = yahoo_collector.Run(
@@ -149,6 +165,18 @@ def _collect_raw_csv(cfg: DatasetConfig) -> None:
     run.download_data(start=cfg.start_str, end=cfg.end_str, delay=cfg.request_delay)
 
 
+# 该函数用于校验下载结果，提醒缺失的标的。
+def _validate_downloaded_data(cfg: DatasetConfig) -> None:
+    expected = set(cfg.symbols)
+    available = {path.stem.upper() for path in cfg.source_dir.glob("*.csv")}
+    missing = sorted(expected - available)
+    if missing:
+        logger.warning("Missing CSV files for %d symbols: %s", len(missing), ", ".join(missing))
+    else:
+        logger.info("All %d symbols downloaded successfully.", len(expected))
+
+
+# 该函数用于将 CSV 数据转换为 Qlib 的二进制格式。
 def _dump_to_qlib(cfg: DatasetConfig) -> None:
     logger.info("Dumping CSV files from %s into Qlib format", cfg.source_dir)
     dump = DumpDataAll(
@@ -163,6 +191,7 @@ def _dump_to_qlib(cfg: DatasetConfig) -> None:
     dump.dump()
 
 
+# 该函数用于按行业输出分组的 instrument 列表。
 def _write_sector_lists(cfg: DatasetConfig) -> None:
     instruments_file = cfg.qlib_dir / "instruments" / "all.txt"
     if not instruments_file.exists():
@@ -179,6 +208,7 @@ def _write_sector_lists(cfg: DatasetConfig) -> None:
         logger.info("Wrote %s with %d entries", out_file, len(subset))
 
 
+# 该函数串联执行整个构建流程。
 def build_dataset(cfg: DatasetConfig) -> None:
     logger.info("Building dataset into %s", cfg.qlib_dir)
     if cfg.force_refresh:
@@ -190,11 +220,13 @@ def build_dataset(cfg: DatasetConfig) -> None:
 
     _patch_symbol_sources(cfg.symbols)
     _collect_raw_csv(cfg)
+    _validate_downloaded_data(cfg)
     _dump_to_qlib(cfg)
     _write_sector_lists(cfg)
     logger.info("Dataset build complete. Qlib data directory: %s", cfg.qlib_dir)
 
 
+# 该函数解析命令行参数。
 def parse_args(args: Iterable[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build a Qlib dataset for selected US tickers")
     parser.add_argument("--start", dest="start", default="2010-01-01", help="Inclusive start date (YYYY-MM-DD)")
@@ -216,6 +248,7 @@ def parse_args(args: Iterable[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(args)
 
 
+# 该函数读取参数并启动数据构建任务。
 def main(cli_args: Iterable[str] | None = None) -> None:
     args = parse_args(cli_args)
     cfg = DatasetConfig(
