@@ -12,7 +12,7 @@
 - 信号：
     - KDJ: K上穿D
     - KDJ-with-trend: K上穿D且EMA5>EMA60
-    - KDJ-with-limit: K上穿D且K<50
+    - KDJ-with-limit: K上穿D且K<40
     - KDJ-with-limit-trend: K上穿D且K<50且EMA5>EMA60
     - MACD: DIF上穿DEA
     - MACD-with-trend: DIF上穿DEA且EMA5>EMA60
