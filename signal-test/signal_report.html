@@ -5,7 +5,7 @@
   <title>Signal Test Report</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 24px; color: #1f2937; }
-    h1 { margin-bottom: 8px; }
+    h1 { margin-bottom: 10px; }
     h2 { color: #2563eb; margin-top: 24px; }
     table { border-collapse: collapse; margin: 16px 0; width: 100%; }
     th, td { border: 1px solid #d1d5db; padding: 6px 10px; text-align: right; }
@@ -20,8 +20,8 @@
 </head>
 <body>
   <h1>Signal Test Report (2020-2025)</h1>
-  <p>持有期 [5, 7, 9, 11, 13, 15] 天，ATR 倍数 [np.float64(1.0), np.float64(1.2), np.float64(1.4), np.float64(1.6), np.float64(1.8), np.float64(2.0), np.float64(2.2), np.float64(2.4), np.float64(2.6), np.float64(2.8), np.float64(3.0)]，止盈：止损 = 1.5:1。</p>
-  <h2>胜率最佳组合</h2>
+  <p>Universe size: 50 symbols. Demo chart uses TSM with horizon=5 and ATR×=2.0.</p>
+  <h2>Best Win Rate</h2>
   <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -215,7 +215,7 @@
     </tr>
   </tbody>
 </table>
-  <h2>净胜次数最佳组合</h2>
+  <h2>Best Net Wins</h2>
   <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -409,390 +409,885 @@
     </tr>
   </tbody>
 </table>
-  
-        <section class="signal-block">
-          <h2>ADX-ADXR</h2>
-          <p>示例标的：KKR；胜率最优组合：horizon=15，ATR×=1.0</p>
-          <ul>
-            <li>触发次数：4054</li>
-            <li>最佳胜率：44.92%（净胜 -340）</li>
-            <li>最佳净胜：h=5，ATR×=3.0，净胜 -227</li>
-          </ul>
-          <figure>
-            <img src="adx-adxr_demo.png" alt="ADX-ADXR demo">
-            <figcaption>2024 年示例 + 三围栏标签着色</figcaption>
-          </figure>
-          <div class="heatmaps">
-            <figure>
-              <img src="adx-adxr_winrate.png" alt="ADX-ADXR win rate">
-              <figcaption>胜率热力图</figcaption>
-            </figure>
-            <figure>
-              <img src="adx-adxr_net.png" alt="ADX-ADXR net wins">
-              <figcaption>净胜热力图</figcaption>
-            </figure>
-          </div>
-        </section>
-        
-        <section class="signal-block">
-          <h2>ADX-ADXR-with-trend</h2>
-          <p>示例标的：NDAQ；胜率最优组合：horizon=15，ATR×=1.0</p>
-          <ul>
-            <li>触发次数：2532</li>
-            <li>最佳胜率：43.92%（净胜 -278）</li>
-            <li>最佳净胜：h=5，ATR×=3.0，净胜 -140</li>
-          </ul>
-          <figure>
-            <img src="adx-adxr-with-trend_demo.png" alt="ADX-ADXR-with-trend demo">
-            <figcaption>2024 年示例 + 三围栏标签着色</figcaption>
-          </figure>
-          <div class="heatmaps">
-            <figure>
-              <img src="adx-adxr-with-trend_winrate.png" alt="ADX-ADXR-with-trend win rate">
-              <figcaption>胜率热力图</figcaption>
-            </figure>
-            <figure>
-              <img src="adx-adxr-with-trend_net.png" alt="ADX-ADXR-with-trend net wins">
-              <figcaption>净胜热力图</figcaption>
-            </figure>
-          </div>
-        </section>
-        
-        <section class="signal-block">
-          <h2>EMA5-10</h2>
-          <p>示例标的：ADI；胜率最优组合：horizon=15，ATR×=1.0</p>
-          <ul>
-            <li>触发次数：4449</li>
-            <li>最佳胜率：43.67%（净胜 -439）</li>
-            <li>最佳净胜：h=5，ATR×=3.0，净胜 -174</li>
-          </ul>
-          <figure>
-            <img src="ema5-10_demo.png" alt="EMA5-10 demo">
-            <figcaption>2024 年示例 + 三围栏标签着色</figcaption>
-          </figure>
-          <div class="heatmaps">
-            <figure>
-              <img src="ema5-10_winrate.png" alt="EMA5-10 win rate">
-              <figcaption>胜率热力图</figcaption>
-            </figure>
-            <figure>
-              <img src="ema5-10_net.png" alt="EMA5-10 net wins">
-              <figcaption>净胜热力图</figcaption>
-            </figure>
-          </div>
-        </section>
-        
-        <section class="signal-block">
-          <h2>EMA5-10-with-trend</h2>
-          <p>示例标的：SAP；胜率最优组合：horizon=15，ATR×=1.0</p>
-          <ul>
-            <li>触发次数：2355</li>
-            <li>最佳胜率：42.55%（净胜 -294）</li>
-            <li>最佳净胜：h=5，ATR×=3.0，净胜 -106</li>
-          </ul>
-          <figure>
-            <img src="ema5-10-with-trend_demo.png" alt="EMA5-10-with-trend demo">
-            <figcaption>2024 年示例 + 三围栏标签着色</figcaption>
-          </figure>
-          <div class="heatmaps">
-            <figure>
-              <img src="ema5-10-with-trend_winrate.png" alt="EMA5-10-with-trend win rate">
-              <figcaption>胜率热力图</figcaption>
-            </figure>
-            <figure>
-              <img src="ema5-10-with-trend_net.png" alt="EMA5-10-with-trend net wins">
-              <figcaption>净胜热力图</figcaption>
-            </figure>
-          </div>
-        </section>
-        
-        <section class="signal-block">
-          <h2>EMA5-20</h2>
-          <p>示例标的：ADI；胜率最优组合：horizon=15，ATR×=1.0</p>
-          <ul>
-            <li>触发次数：3232</li>
-            <li>最佳胜率：44.37%（净胜 -279）</li>
-            <li>最佳净胜：h=5，ATR×=3.0，净胜 -143</li>
-          </ul>
-          <figure>
-            <img src="ema5-20_demo.png" alt="EMA5-20 demo">
-            <figcaption>2024 年示例 + 三围栏标签着色</figcaption>
-          </figure>
-          <div class="heatmaps">
-            <figure>
-              <img src="ema5-20_winrate.png" alt="EMA5-20 win rate">
-              <figcaption>胜率热力图</figcaption>
-            </figure>
-            <figure>
-              <img src="ema5-20_net.png" alt="EMA5-20 net wins">
-              <figcaption>净胜热力图</figcaption>
-            </figure>
-          </div>
-        </section>
-        
-        <section class="signal-block">
-          <h2>EMA5-20-with-trend</h2>
-          <p>示例标的：ADI；胜率最优组合：horizon=15，ATR×=1.2</p>
-          <ul>
-            <li>触发次数：1864</li>
-            <li>最佳胜率：42.81%（净胜 -176）</li>
-            <li>最佳净胜：h=5，ATR×=3.0，净胜 -87</li>
-          </ul>
-          <figure>
-            <img src="ema5-20-with-trend_demo.png" alt="EMA5-20-with-trend demo">
-            <figcaption>2024 年示例 + 三围栏标签着色</figcaption>
-          </figure>
-          <div class="heatmaps">
-            <figure>
-              <img src="ema5-20-with-trend_winrate.png" alt="EMA5-20-with-trend win rate">
-              <figcaption>胜率热力图</figcaption>
-            </figure>
-            <figure>
-              <img src="ema5-20-with-trend_net.png" alt="EMA5-20-with-trend net wins">
-              <figcaption>净胜热力图</figcaption>
-            </figure>
-          </div>
-        </section>
-        
-        <section class="signal-block">
-          <h2>KDJ</h2>
-          <p>示例标的：MCD；胜率最优组合：horizon=15，ATR×=1.0</p>
-          <ul>
-            <li>触发次数：8329</li>
-            <li>最佳胜率：44.48%（净胜 -711）</li>
-            <li>最佳净胜：h=5，ATR×=3.0，净胜 -475</li>
-          </ul>
-          <figure>
-            <img src="kdj_demo.png" alt="KDJ demo">
-            <figcaption>2024 年示例 + 三围栏标签着色</figcaption>
-          </figure>
-          <div class="heatmaps">
-            <figure>
-              <img src="kdj_winrate.png" alt="KDJ win rate">
-              <figcaption>胜率热力图</figcaption>
-            </figure>
-            <figure>
-              <img src="kdj_net.png" alt="KDJ net wins">
-              <figcaption>净胜热力图</figcaption>
-            </figure>
-          </div>
-        </section>
-        
-        <section class="signal-block">
-          <h2>KDJ-with-limit</h2>
-          <p>示例标的：TXN；胜率最优组合：horizon=15，ATR×=1.0</p>
-          <ul>
-            <li>触发次数：4156</li>
-            <li>最佳胜率：44.85%（净胜 -313）</li>
-            <li>最佳净胜：h=5，ATR×=3.0，净胜 -263</li>
-          </ul>
-          <figure>
-            <img src="kdj-with-limit_demo.png" alt="KDJ-with-limit demo">
-            <figcaption>2024 年示例 + 三围栏标签着色</figcaption>
-          </figure>
-          <div class="heatmaps">
-            <figure>
-              <img src="kdj-with-limit_winrate.png" alt="KDJ-with-limit win rate">
-              <figcaption>胜率热力图</figcaption>
-            </figure>
-            <figure>
-              <img src="kdj-with-limit_net.png" alt="KDJ-with-limit net wins">
-              <figcaption>净胜热力图</figcaption>
-            </figure>
-          </div>
-        </section>
-        
-        <section class="signal-block">
-          <h2>KDJ-with-limit-trend</h2>
-          <p>示例标的：KKR；胜率最优组合：horizon=15，ATR×=1.0</p>
-          <ul>
-            <li>触发次数：1356</li>
-            <li>最佳胜率：43.36%（净胜 -147）</li>
-            <li>最佳净胜：h=5，ATR×=3.0，净胜 -110</li>
-          </ul>
-          <figure>
-            <img src="kdj-with-limit-trend_demo.png" alt="KDJ-with-limit-trend demo">
-            <figcaption>2024 年示例 + 三围栏标签着色</figcaption>
-          </figure>
-          <div class="heatmaps">
-            <figure>
-              <img src="kdj-with-limit-trend_winrate.png" alt="KDJ-with-limit-trend win rate">
-              <figcaption>胜率热力图</figcaption>
-            </figure>
-            <figure>
-              <img src="kdj-with-limit-trend_net.png" alt="KDJ-with-limit-trend net wins">
-              <figcaption>净胜热力图</figcaption>
-            </figure>
-          </div>
-        </section>
-        
-        <section class="signal-block">
-          <h2>KDJ-with-trend</h2>
-          <p>示例标的：AXP；胜率最优组合：horizon=15，ATR×=1.0</p>
-          <ul>
-            <li>触发次数：4894</li>
-            <li>最佳胜率：42.93%（净胜 -588）</li>
-            <li>最佳净胜：h=5，ATR×=3.0，净胜 -298</li>
-          </ul>
-          <figure>
-            <img src="kdj-with-trend_demo.png" alt="KDJ-with-trend demo">
-            <figcaption>2024 年示例 + 三围栏标签着色</figcaption>
-          </figure>
-          <div class="heatmaps">
-            <figure>
-              <img src="kdj-with-trend_winrate.png" alt="KDJ-with-trend win rate">
-              <figcaption>胜率热力图</figcaption>
-            </figure>
-            <figure>
-              <img src="kdj-with-trend_net.png" alt="KDJ-with-trend net wins">
-              <figcaption>净胜热力图</figcaption>
-            </figure>
-          </div>
-        </section>
-        
-        <section class="signal-block">
-          <h2>MACD</h2>
-          <p>示例标的：AVGO；胜率最优组合：horizon=15，ATR×=1.0</p>
-          <ul>
-            <li>触发次数：4476</li>
-            <li>最佳胜率：44.59%（净胜 -363）</li>
-            <li>最佳净胜：h=5，ATR×=3.0，净胜 -155</li>
-          </ul>
-          <figure>
-            <img src="macd_demo.png" alt="MACD demo">
-            <figcaption>2024 年示例 + 三围栏标签着色</figcaption>
-          </figure>
-          <div class="heatmaps">
-            <figure>
-              <img src="macd_winrate.png" alt="MACD win rate">
-              <figcaption>胜率热力图</figcaption>
-            </figure>
-            <figure>
-              <img src="macd_net.png" alt="MACD net wins">
-              <figcaption>净胜热力图</figcaption>
-            </figure>
-          </div>
-        </section>
-        
-        <section class="signal-block">
-          <h2>MACD-with-limit</h2>
-          <p>示例标的：V；胜率最优组合：horizon=15，ATR×=1.0</p>
-          <ul>
-            <li>触发次数：2266</li>
-            <li>最佳胜率：45.06%（净胜 -141）</li>
-            <li>最佳净胜：h=5，ATR×=3.0，净胜 -67</li>
-          </ul>
-          <figure>
-            <img src="macd-with-limit_demo.png" alt="MACD-with-limit demo">
-            <figcaption>2024 年示例 + 三围栏标签着色</figcaption>
-          </figure>
-          <div class="heatmaps">
-            <figure>
-              <img src="macd-with-limit_winrate.png" alt="MACD-with-limit win rate">
-              <figcaption>胜率热力图</figcaption>
-            </figure>
-            <figure>
-              <img src="macd-with-limit_net.png" alt="MACD-with-limit net wins">
-              <figcaption>净胜热力图</figcaption>
-            </figure>
-          </div>
-        </section>
-        
-        <section class="signal-block">
-          <h2>MACD-with-trend</h2>
-          <p>示例标的：AVGO；胜率最优组合：horizon=15，ATR×=1.0</p>
-          <ul>
-            <li>触发次数：2606</li>
-            <li>最佳胜率：43.98%（净胜 -265）</li>
-            <li>最佳净胜：h=5，ATR×=3.0，净胜 -111</li>
-          </ul>
-          <figure>
-            <img src="macd-with-trend_demo.png" alt="MACD-with-trend demo">
-            <figcaption>2024 年示例 + 三围栏标签着色</figcaption>
-          </figure>
-          <div class="heatmaps">
-            <figure>
-              <img src="macd-with-trend_winrate.png" alt="MACD-with-trend win rate">
-              <figcaption>胜率热力图</figcaption>
-            </figure>
-            <figure>
-              <img src="macd-with-trend_net.png" alt="MACD-with-trend net wins">
-              <figcaption>净胜热力图</figcaption>
-            </figure>
-          </div>
-        </section>
-        
-        <section class="signal-block">
-          <h2>MACD-with-trend-limit</h2>
-          <p>示例标的：AVGO；胜率最优组合：horizon=15，ATR×=1.0</p>
-          <ul>
-            <li>触发次数：429</li>
-            <li>最佳胜率：43.59%（净胜 -44）</li>
-            <li>最佳净胜：h=5，ATR×=3.0，净胜 -21</li>
-          </ul>
-          <figure>
-            <img src="macd-with-trend-limit_demo.png" alt="MACD-with-trend-limit demo">
-            <figcaption>2024 年示例 + 三围栏标签着色</figcaption>
-          </figure>
-          <div class="heatmaps">
-            <figure>
-              <img src="macd-with-trend-limit_winrate.png" alt="MACD-with-trend-limit win rate">
-              <figcaption>胜率热力图</figcaption>
-            </figure>
-            <figure>
-              <img src="macd-with-trend-limit_net.png" alt="MACD-with-trend-limit net wins">
-              <figcaption>净胜热力图</figcaption>
-            </figure>
-          </div>
-        </section>
-        
-        <section class="signal-block">
-          <h2>PDI-MDI</h2>
-          <p>示例标的：ADI；胜率最优组合：horizon=15，ATR×=1.0</p>
-          <ul>
-            <li>触发次数：4317</li>
-            <li>最佳胜率：44.85%（净胜 -349）</li>
-            <li>最佳净胜：h=5，ATR×=3.0，净胜 -199</li>
-          </ul>
-          <figure>
-            <img src="pdi-mdi_demo.png" alt="PDI-MDI demo">
-            <figcaption>2024 年示例 + 三围栏标签着色</figcaption>
-          </figure>
-          <div class="heatmaps">
-            <figure>
-              <img src="pdi-mdi_winrate.png" alt="PDI-MDI win rate">
-              <figcaption>胜率热力图</figcaption>
-            </figure>
-            <figure>
-              <img src="pdi-mdi_net.png" alt="PDI-MDI net wins">
-              <figcaption>净胜热力图</figcaption>
-            </figure>
-          </div>
-        </section>
-        
-        <section class="signal-block">
-          <h2>PDI-MDI-with-trend</h2>
-          <p>示例标的：ARES；胜率最优组合：horizon=15，ATR×=1.0</p>
-          <ul>
-            <li>触发次数：2573</li>
-            <li>最佳胜率：45.63%（净胜 -179）</li>
-            <li>最佳净胜：h=5，ATR×=3.0，净胜 -115</li>
-          </ul>
-          <figure>
-            <img src="pdi-mdi-with-trend_demo.png" alt="PDI-MDI-with-trend demo">
-            <figcaption>2024 年示例 + 三围栏标签着色</figcaption>
-          </figure>
-          <div class="heatmaps">
-            <figure>
-              <img src="pdi-mdi-with-trend_winrate.png" alt="PDI-MDI-with-trend win rate">
-              <figcaption>胜率热力图</figcaption>
-            </figure>
-            <figure>
-              <img src="pdi-mdi-with-trend_net.png" alt="PDI-MDI-with-trend net wins">
-              <figcaption>净胜热力图</figcaption>
-            </figure>
-          </div>
-        </section>
-        
+<section class="signal-block">
+  <h2>KDJ</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Scenario</th>
+      <th>Triggers</th>
+      <th>Horizon</th>
+      <th>ATR</th>
+      <th>Win rate</th>
+      <th>Net wins</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Triggers</td>
+      <td>8329</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Best win rate</td>
+      <td></td>
+      <td>15</td>
+      <td>1.0</td>
+      <td>44.48%</td>
+      <td>-711</td>
+    </tr>
+    <tr>
+      <td>Best net wins</td>
+      <td></td>
+      <td>5</td>
+      <td>3.0</td>
+      <td>2.45%</td>
+      <td>-475</td>
+    </tr>
+  </tbody>
+</table>
+  <figure>
+    <img src="report_assets/kdj_demo.png" alt="KDJ demo">
+    <figcaption>TSM demo (2024, horizon=5, ATR=2.0)</figcaption>
+  </figure>
+  <div class="heatmaps">
+    <figure>
+      <img src="report_assets/kdj_winrate.png" alt="KDJ win rate">
+      <figcaption>Win rate heatmap</figcaption>
+    </figure>
+    <figure>
+      <img src="report_assets/kdj_netwins.png" alt="KDJ net wins">
+      <figcaption>Net wins heatmap</figcaption>
+    </figure>
+  </div>
+</section>
+<section class="signal-block">
+  <h2>KDJ-with-trend</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Scenario</th>
+      <th>Triggers</th>
+      <th>Horizon</th>
+      <th>ATR</th>
+      <th>Win rate</th>
+      <th>Net wins</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Triggers</td>
+      <td>4894</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Best win rate</td>
+      <td></td>
+      <td>15</td>
+      <td>1.0</td>
+      <td>42.93%</td>
+      <td>-588</td>
+    </tr>
+    <tr>
+      <td>Best net wins</td>
+      <td></td>
+      <td>5</td>
+      <td>3.0</td>
+      <td>2.66%</td>
+      <td>-298</td>
+    </tr>
+  </tbody>
+</table>
+  <figure>
+    <img src="report_assets/kdj-with-trend_demo.png" alt="KDJ-with-trend demo">
+    <figcaption>TSM demo (2024, horizon=5, ATR=2.0)</figcaption>
+  </figure>
+  <div class="heatmaps">
+    <figure>
+      <img src="report_assets/kdj-with-trend_winrate.png" alt="KDJ-with-trend win rate">
+      <figcaption>Win rate heatmap</figcaption>
+    </figure>
+    <figure>
+      <img src="report_assets/kdj-with-trend_netwins.png" alt="KDJ-with-trend net wins">
+      <figcaption>Net wins heatmap</figcaption>
+    </figure>
+  </div>
+</section>
+<section class="signal-block">
+  <h2>KDJ-with-limit</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Scenario</th>
+      <th>Triggers</th>
+      <th>Horizon</th>
+      <th>ATR</th>
+      <th>Win rate</th>
+      <th>Net wins</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Triggers</td>
+      <td>4156</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Best win rate</td>
+      <td></td>
+      <td>15</td>
+      <td>1.0</td>
+      <td>44.85%</td>
+      <td>-313</td>
+    </tr>
+    <tr>
+      <td>Best net wins</td>
+      <td></td>
+      <td>5</td>
+      <td>3.0</td>
+      <td>2.29%</td>
+      <td>-263</td>
+    </tr>
+  </tbody>
+</table>
+  <figure>
+    <img src="report_assets/kdj-with-limit_demo.png" alt="KDJ-with-limit demo">
+    <figcaption>TSM demo (2024, horizon=5, ATR=2.0)</figcaption>
+  </figure>
+  <div class="heatmaps">
+    <figure>
+      <img src="report_assets/kdj-with-limit_winrate.png" alt="KDJ-with-limit win rate">
+      <figcaption>Win rate heatmap</figcaption>
+    </figure>
+    <figure>
+      <img src="report_assets/kdj-with-limit_netwins.png" alt="KDJ-with-limit net wins">
+      <figcaption>Net wins heatmap</figcaption>
+    </figure>
+  </div>
+</section>
+<section class="signal-block">
+  <h2>KDJ-with-limit-trend</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Scenario</th>
+      <th>Triggers</th>
+      <th>Horizon</th>
+      <th>ATR</th>
+      <th>Win rate</th>
+      <th>Net wins</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Triggers</td>
+      <td>1356</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Best win rate</td>
+      <td></td>
+      <td>15</td>
+      <td>1.0</td>
+      <td>43.36%</td>
+      <td>-147</td>
+    </tr>
+    <tr>
+      <td>Best net wins</td>
+      <td></td>
+      <td>5</td>
+      <td>3.0</td>
+      <td>2.80%</td>
+      <td>-110</td>
+    </tr>
+  </tbody>
+</table>
+  <figure>
+    <img src="report_assets/kdj-with-limit-trend_demo.png" alt="KDJ-with-limit-trend demo">
+    <figcaption>TSM demo (2024, horizon=5, ATR=2.0)</figcaption>
+  </figure>
+  <div class="heatmaps">
+    <figure>
+      <img src="report_assets/kdj-with-limit-trend_winrate.png" alt="KDJ-with-limit-trend win rate">
+      <figcaption>Win rate heatmap</figcaption>
+    </figure>
+    <figure>
+      <img src="report_assets/kdj-with-limit-trend_netwins.png" alt="KDJ-with-limit-trend net wins">
+      <figcaption>Net wins heatmap</figcaption>
+    </figure>
+  </div>
+</section>
+<section class="signal-block">
+  <h2>MACD</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Scenario</th>
+      <th>Triggers</th>
+      <th>Horizon</th>
+      <th>ATR</th>
+      <th>Win rate</th>
+      <th>Net wins</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Triggers</td>
+      <td>4476</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Best win rate</td>
+      <td></td>
+      <td>15</td>
+      <td>1.0</td>
+      <td>44.59%</td>
+      <td>-363</td>
+    </tr>
+    <tr>
+      <td>Best net wins</td>
+      <td></td>
+      <td>5</td>
+      <td>3.0</td>
+      <td>2.73%</td>
+      <td>-155</td>
+    </tr>
+  </tbody>
+</table>
+  <figure>
+    <img src="report_assets/macd_demo.png" alt="MACD demo">
+    <figcaption>TSM demo (2024, horizon=5, ATR=2.0)</figcaption>
+  </figure>
+  <div class="heatmaps">
+    <figure>
+      <img src="report_assets/macd_winrate.png" alt="MACD win rate">
+      <figcaption>Win rate heatmap</figcaption>
+    </figure>
+    <figure>
+      <img src="report_assets/macd_netwins.png" alt="MACD net wins">
+      <figcaption>Net wins heatmap</figcaption>
+    </figure>
+  </div>
+</section>
+<section class="signal-block">
+  <h2>MACD-with-trend</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Scenario</th>
+      <th>Triggers</th>
+      <th>Horizon</th>
+      <th>ATR</th>
+      <th>Win rate</th>
+      <th>Net wins</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Triggers</td>
+      <td>2606</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Best win rate</td>
+      <td></td>
+      <td>15</td>
+      <td>1.0</td>
+      <td>43.98%</td>
+      <td>-265</td>
+    </tr>
+    <tr>
+      <td>Best net wins</td>
+      <td></td>
+      <td>5</td>
+      <td>3.0</td>
+      <td>3.11%</td>
+      <td>-111</td>
+    </tr>
+  </tbody>
+</table>
+  <figure>
+    <img src="report_assets/macd-with-trend_demo.png" alt="MACD-with-trend demo">
+    <figcaption>TSM demo (2024, horizon=5, ATR=2.0)</figcaption>
+  </figure>
+  <div class="heatmaps">
+    <figure>
+      <img src="report_assets/macd-with-trend_winrate.png" alt="MACD-with-trend win rate">
+      <figcaption>Win rate heatmap</figcaption>
+    </figure>
+    <figure>
+      <img src="report_assets/macd-with-trend_netwins.png" alt="MACD-with-trend net wins">
+      <figcaption>Net wins heatmap</figcaption>
+    </figure>
+  </div>
+</section>
+<section class="signal-block">
+  <h2>MACD-with-limit</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Scenario</th>
+      <th>Triggers</th>
+      <th>Horizon</th>
+      <th>ATR</th>
+      <th>Win rate</th>
+      <th>Net wins</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Triggers</td>
+      <td>2266</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Best win rate</td>
+      <td></td>
+      <td>15</td>
+      <td>1.0</td>
+      <td>45.06%</td>
+      <td>-141</td>
+    </tr>
+    <tr>
+      <td>Best net wins</td>
+      <td></td>
+      <td>5</td>
+      <td>3.0</td>
+      <td>1.99%</td>
+      <td>-67</td>
+    </tr>
+  </tbody>
+</table>
+  <figure>
+    <img src="report_assets/macd-with-limit_demo.png" alt="MACD-with-limit demo">
+    <figcaption>TSM demo (2024, horizon=5, ATR=2.0)</figcaption>
+  </figure>
+  <div class="heatmaps">
+    <figure>
+      <img src="report_assets/macd-with-limit_winrate.png" alt="MACD-with-limit win rate">
+      <figcaption>Win rate heatmap</figcaption>
+    </figure>
+    <figure>
+      <img src="report_assets/macd-with-limit_netwins.png" alt="MACD-with-limit net wins">
+      <figcaption>Net wins heatmap</figcaption>
+    </figure>
+  </div>
+</section>
+<section class="signal-block">
+  <h2>MACD-with-trend-limit</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Scenario</th>
+      <th>Triggers</th>
+      <th>Horizon</th>
+      <th>ATR</th>
+      <th>Win rate</th>
+      <th>Net wins</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Triggers</td>
+      <td>429</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Best win rate</td>
+      <td></td>
+      <td>15</td>
+      <td>1.0</td>
+      <td>43.59%</td>
+      <td>-44</td>
+    </tr>
+    <tr>
+      <td>Best net wins</td>
+      <td></td>
+      <td>5</td>
+      <td>3.0</td>
+      <td>1.63%</td>
+      <td>-21</td>
+    </tr>
+  </tbody>
+</table>
+  <figure>
+    <img src="report_assets/macd-with-trend-limit_demo.png" alt="MACD-with-trend-limit demo">
+    <figcaption>TSM demo (2024, horizon=5, ATR=2.0)</figcaption>
+  </figure>
+  <div class="heatmaps">
+    <figure>
+      <img src="report_assets/macd-with-trend-limit_winrate.png" alt="MACD-with-trend-limit win rate">
+      <figcaption>Win rate heatmap</figcaption>
+    </figure>
+    <figure>
+      <img src="report_assets/macd-with-trend-limit_netwins.png" alt="MACD-with-trend-limit net wins">
+      <figcaption>Net wins heatmap</figcaption>
+    </figure>
+  </div>
+</section>
+<section class="signal-block">
+  <h2>EMA5-10</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Scenario</th>
+      <th>Triggers</th>
+      <th>Horizon</th>
+      <th>ATR</th>
+      <th>Win rate</th>
+      <th>Net wins</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Triggers</td>
+      <td>4449</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Best win rate</td>
+      <td></td>
+      <td>15</td>
+      <td>1.0</td>
+      <td>43.67%</td>
+      <td>-439</td>
+    </tr>
+    <tr>
+      <td>Best net wins</td>
+      <td></td>
+      <td>5</td>
+      <td>3.0</td>
+      <td>2.74%</td>
+      <td>-174</td>
+    </tr>
+  </tbody>
+</table>
+  <figure>
+    <img src="report_assets/ema5-10_demo.png" alt="EMA5-10 demo">
+    <figcaption>TSM demo (2024, horizon=5, ATR=2.0)</figcaption>
+  </figure>
+  <div class="heatmaps">
+    <figure>
+      <img src="report_assets/ema5-10_winrate.png" alt="EMA5-10 win rate">
+      <figcaption>Win rate heatmap</figcaption>
+    </figure>
+    <figure>
+      <img src="report_assets/ema5-10_netwins.png" alt="EMA5-10 net wins">
+      <figcaption>Net wins heatmap</figcaption>
+    </figure>
+  </div>
+</section>
+<section class="signal-block">
+  <h2>EMA5-10-with-trend</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Scenario</th>
+      <th>Triggers</th>
+      <th>Horizon</th>
+      <th>ATR</th>
+      <th>Win rate</th>
+      <th>Net wins</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Triggers</td>
+      <td>2355</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Best win rate</td>
+      <td></td>
+      <td>15</td>
+      <td>1.0</td>
+      <td>42.55%</td>
+      <td>-294</td>
+    </tr>
+    <tr>
+      <td>Best net wins</td>
+      <td></td>
+      <td>5</td>
+      <td>3.0</td>
+      <td>3.01%</td>
+      <td>-106</td>
+    </tr>
+  </tbody>
+</table>
+  <figure>
+    <img src="report_assets/ema5-10-with-trend_demo.png" alt="EMA5-10-with-trend demo">
+    <figcaption>TSM demo (2024, horizon=5, ATR=2.0)</figcaption>
+  </figure>
+  <div class="heatmaps">
+    <figure>
+      <img src="report_assets/ema5-10-with-trend_winrate.png" alt="EMA5-10-with-trend win rate">
+      <figcaption>Win rate heatmap</figcaption>
+    </figure>
+    <figure>
+      <img src="report_assets/ema5-10-with-trend_netwins.png" alt="EMA5-10-with-trend net wins">
+      <figcaption>Net wins heatmap</figcaption>
+    </figure>
+  </div>
+</section>
+<section class="signal-block">
+  <h2>EMA5-20</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Scenario</th>
+      <th>Triggers</th>
+      <th>Horizon</th>
+      <th>ATR</th>
+      <th>Win rate</th>
+      <th>Net wins</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Triggers</td>
+      <td>3232</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Best win rate</td>
+      <td></td>
+      <td>15</td>
+      <td>1.0</td>
+      <td>44.37%</td>
+      <td>-279</td>
+    </tr>
+    <tr>
+      <td>Best net wins</td>
+      <td></td>
+      <td>5</td>
+      <td>3.0</td>
+      <td>2.60%</td>
+      <td>-143</td>
+    </tr>
+  </tbody>
+</table>
+  <figure>
+    <img src="report_assets/ema5-20_demo.png" alt="EMA5-20 demo">
+    <figcaption>TSM demo (2024, horizon=5, ATR=2.0)</figcaption>
+  </figure>
+  <div class="heatmaps">
+    <figure>
+      <img src="report_assets/ema5-20_winrate.png" alt="EMA5-20 win rate">
+      <figcaption>Win rate heatmap</figcaption>
+    </figure>
+    <figure>
+      <img src="report_assets/ema5-20_netwins.png" alt="EMA5-20 net wins">
+      <figcaption>Net wins heatmap</figcaption>
+    </figure>
+  </div>
+</section>
+<section class="signal-block">
+  <h2>EMA5-20-with-trend</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Scenario</th>
+      <th>Triggers</th>
+      <th>Horizon</th>
+      <th>ATR</th>
+      <th>Win rate</th>
+      <th>Net wins</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Triggers</td>
+      <td>1864</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Best win rate</td>
+      <td></td>
+      <td>15</td>
+      <td>1.2</td>
+      <td>42.81%</td>
+      <td>-176</td>
+    </tr>
+    <tr>
+      <td>Best net wins</td>
+      <td></td>
+      <td>5</td>
+      <td>3.0</td>
+      <td>2.95%</td>
+      <td>-87</td>
+    </tr>
+  </tbody>
+</table>
+  <figure>
+    <img src="report_assets/ema5-20-with-trend_demo.png" alt="EMA5-20-with-trend demo">
+    <figcaption>TSM demo (2024, horizon=5, ATR=2.0)</figcaption>
+  </figure>
+  <div class="heatmaps">
+    <figure>
+      <img src="report_assets/ema5-20-with-trend_winrate.png" alt="EMA5-20-with-trend win rate">
+      <figcaption>Win rate heatmap</figcaption>
+    </figure>
+    <figure>
+      <img src="report_assets/ema5-20-with-trend_netwins.png" alt="EMA5-20-with-trend net wins">
+      <figcaption>Net wins heatmap</figcaption>
+    </figure>
+  </div>
+</section>
+<section class="signal-block">
+  <h2>ADX-ADXR</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Scenario</th>
+      <th>Triggers</th>
+      <th>Horizon</th>
+      <th>ATR</th>
+      <th>Win rate</th>
+      <th>Net wins</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Triggers</td>
+      <td>4054</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Best win rate</td>
+      <td></td>
+      <td>15</td>
+      <td>1.0</td>
+      <td>44.92%</td>
+      <td>-340</td>
+    </tr>
+    <tr>
+      <td>Best net wins</td>
+      <td></td>
+      <td>5</td>
+      <td>3.0</td>
+      <td>2.12%</td>
+      <td>-227</td>
+    </tr>
+  </tbody>
+</table>
+  <figure>
+    <img src="report_assets/adx-adxr_demo.png" alt="ADX-ADXR demo">
+    <figcaption>TSM demo (2024, horizon=5, ATR=2.0)</figcaption>
+  </figure>
+  <div class="heatmaps">
+    <figure>
+      <img src="report_assets/adx-adxr_winrate.png" alt="ADX-ADXR win rate">
+      <figcaption>Win rate heatmap</figcaption>
+    </figure>
+    <figure>
+      <img src="report_assets/adx-adxr_netwins.png" alt="ADX-ADXR net wins">
+      <figcaption>Net wins heatmap</figcaption>
+    </figure>
+  </div>
+</section>
+<section class="signal-block">
+  <h2>ADX-ADXR-with-trend</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Scenario</th>
+      <th>Triggers</th>
+      <th>Horizon</th>
+      <th>ATR</th>
+      <th>Win rate</th>
+      <th>Net wins</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Triggers</td>
+      <td>2532</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Best win rate</td>
+      <td></td>
+      <td>15</td>
+      <td>1.0</td>
+      <td>43.92%</td>
+      <td>-278</td>
+    </tr>
+    <tr>
+      <td>Best net wins</td>
+      <td></td>
+      <td>5</td>
+      <td>3.0</td>
+      <td>2.25%</td>
+      <td>-140</td>
+    </tr>
+  </tbody>
+</table>
+  <figure>
+    <img src="report_assets/adx-adxr-with-trend_demo.png" alt="ADX-ADXR-with-trend demo">
+    <figcaption>TSM demo (2024, horizon=5, ATR=2.0)</figcaption>
+  </figure>
+  <div class="heatmaps">
+    <figure>
+      <img src="report_assets/adx-adxr-with-trend_winrate.png" alt="ADX-ADXR-with-trend win rate">
+      <figcaption>Win rate heatmap</figcaption>
+    </figure>
+    <figure>
+      <img src="report_assets/adx-adxr-with-trend_netwins.png" alt="ADX-ADXR-with-trend net wins">
+      <figcaption>Net wins heatmap</figcaption>
+    </figure>
+  </div>
+</section>
+<section class="signal-block">
+  <h2>PDI-MDI</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Scenario</th>
+      <th>Triggers</th>
+      <th>Horizon</th>
+      <th>ATR</th>
+      <th>Win rate</th>
+      <th>Net wins</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Triggers</td>
+      <td>4317</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Best win rate</td>
+      <td></td>
+      <td>15</td>
+      <td>1.0</td>
+      <td>44.85%</td>
+      <td>-349</td>
+    </tr>
+    <tr>
+      <td>Best net wins</td>
+      <td></td>
+      <td>5</td>
+      <td>3.0</td>
+      <td>2.80%</td>
+      <td>-199</td>
+    </tr>
+  </tbody>
+</table>
+  <figure>
+    <img src="report_assets/pdi-mdi_demo.png" alt="PDI-MDI demo">
+    <figcaption>TSM demo (2024, horizon=5, ATR=2.0)</figcaption>
+  </figure>
+  <div class="heatmaps">
+    <figure>
+      <img src="report_assets/pdi-mdi_winrate.png" alt="PDI-MDI win rate">
+      <figcaption>Win rate heatmap</figcaption>
+    </figure>
+    <figure>
+      <img src="report_assets/pdi-mdi_netwins.png" alt="PDI-MDI net wins">
+      <figcaption>Net wins heatmap</figcaption>
+    </figure>
+  </div>
+</section>
+<section class="signal-block">
+  <h2>PDI-MDI-with-trend</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Scenario</th>
+      <th>Triggers</th>
+      <th>Horizon</th>
+      <th>ATR</th>
+      <th>Win rate</th>
+      <th>Net wins</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Triggers</td>
+      <td>2573</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Best win rate</td>
+      <td></td>
+      <td>15</td>
+      <td>1.0</td>
+      <td>45.63%</td>
+      <td>-179</td>
+    </tr>
+    <tr>
+      <td>Best net wins</td>
+      <td></td>
+      <td>5</td>
+      <td>3.0</td>
+      <td>2.84%</td>
+      <td>-115</td>
+    </tr>
+  </tbody>
+</table>
+  <figure>
+    <img src="report_assets/pdi-mdi-with-trend_demo.png" alt="PDI-MDI-with-trend demo">
+    <figcaption>TSM demo (2024, horizon=5, ATR=2.0)</figcaption>
+  </figure>
+  <div class="heatmaps">
+    <figure>
+      <img src="report_assets/pdi-mdi-with-trend_winrate.png" alt="PDI-MDI-with-trend win rate">
+      <figcaption>Win rate heatmap</figcaption>
+    </figure>
+    <figure>
+      <img src="report_assets/pdi-mdi-with-trend_netwins.png" alt="PDI-MDI-with-trend net wins">
+      <figcaption>Net wins heatmap</figcaption>
+    </figure>
+  </div>
+</section>
 </body>
 </html>
