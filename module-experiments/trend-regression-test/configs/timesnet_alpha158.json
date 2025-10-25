@@ -1,0 +1,27 @@
+{
+  "_feature_mode_options": ["raw_alpha158", "raw_alpha360"],
+  "feature_mode": "raw_alpha360",
+  "window_size": 128,
+  "batch_size": 256,
+  "num_workers": 0,
+  "splits": {
+    "train": ["2014-01-01", "2021-12-31"],
+    "val": ["2022-01-01", "2022-12-31"],
+    "test": ["2023-01-01", "2023-12-31"]
+  },
+  "learning_rate": 0.0006,
+  "weight_decay": 0.00005,
+  "epochs": 200,
+  "grad_clip": 1.0,
+  "checkpoint_every": 10,
+  "output_dir": "module-experiments/trend-regression-test/outputs/timesnet_alpha158",
+  "model": {
+    "name": "timesnet",
+    "params": {
+      "hidden_dim": 512,
+      "num_blocks": 8,
+      "kernel_sizes": [5, 7, 9],
+      "dropout": 0.45
+    }
+  }
+}

@@ -1,4 +1,4 @@
-# Preposition Experiments
+# preposition-experiments
 
 This directory consolidates the independent research prototypes previously scattered under `experiment-*`. Each subfolder is self-contained; details and usage guidance are summarized below.
 
@@ -29,7 +29,7 @@ This directory consolidates the independent research prototypes previously scatt
   python train.py --config config.json
   python validate.py --config config.json
   ```
-  Generated artifacts are stored in `preposition-experiments/experiment-1003/outputs`.
+Generated artifacts are stored in `preposition-experiments/experiment-1003/outputs`.
 
 ## experiment-1005 — Multi-Model Indicator Pipeline
 - **Goal**: Provide data preparation, indicator computation, and modelling utilities for multiple strategies.

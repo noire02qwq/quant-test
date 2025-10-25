@@ -1,0 +1,57 @@
+{
+  "config_path": "module-experiments/long-classification-experiment/configs/transformer_raw_traditional.json",
+  "feature_mode": "raw_secondary",
+  "feature_cols": [
+    "open",
+    "high",
+    "low",
+    "close",
+    "volume",
+    "vwap",
+    "ret",
+    "signal_macd",
+    "signal_kdj",
+    "signal_ema",
+    "signal_sar",
+    "signal_dmi",
+    "signal_adtm",
+    "signal_ddi",
+    "signal_dpo",
+    "signal_osc",
+    "signal_srmi",
+    "signal_boll_close_break",
+    "signal_boll_open_break"
+  ],
+  "window_size": 90,
+  "batch_size": 224,
+  "epochs": 200,
+  "best_epoch": 74,
+  "best_val_acc": 0.5838509316770186,
+  "test_loss": 2.1586563952861386,
+  "test_acc": 0.6503067484662577,
+  "model_name": "transformer",
+  "model_params": {
+    "d_model": 256,
+    "nhead": 4,
+    "num_layers": 8,
+    "dim_feedforward": 512,
+    "dropout": 0.4,
+    "pooling": "mean"
+  },
+  "scaler_path": "/home/amoris/quant-test/module-experiments/long-classification-experiment/outputs/transformer_raw_traditional/scaler_transformer_raw_secondary.json",
+  "best_checkpoint": "/home/amoris/quant-test/module-experiments/long-classification-experiment/outputs/transformer_raw_traditional/checkpoints/best_transformer_raw_secondary.pt",
+  "splits": {
+    "train": [
+      "2015-01-01",
+      "2022-12-31"
+    ],
+    "val": [
+      "2023-01-01",
+      "2023-12-31"
+    ],
+    "test": [
+      "2024-01-01",
+      "2024-12-31"
+    ]
+  }
+}
