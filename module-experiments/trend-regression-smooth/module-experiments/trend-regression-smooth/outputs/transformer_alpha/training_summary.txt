@@ -1,0 +1,7 @@
+best_epoch: 121
+best_val_mae: 4.264293
+best_val_mse: 31.951819
+test_mae: 6.537790
+test_mse: 61.437057
+initial_train_mae: 3.432823
+guard_threshold: 0.858206

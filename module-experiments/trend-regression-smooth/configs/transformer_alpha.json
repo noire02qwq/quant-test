@@ -1,0 +1,32 @@
+{
+  "feature_mode": "alpha",
+  "feature_mode_params": {
+    "alpha_kind": "alpha158",
+    "min_r2": 0.75
+  },
+  "window_size": 112,
+  "batch_size": 176,
+  "num_workers": 0,
+  "splits": {
+    "train": ["2014-01-01", "2021-12-31"],
+    "val": ["2022-01-01", "2022-12-31"],
+    "test": ["2023-01-01", "2023-12-31"]
+  },
+  "learning_rate": 0.0004,
+  "weight_decay": 0.00005,
+  "epochs": 180,
+  "grad_clip": 1.0,
+  "output_dir": "module-experiments/trend-regression-smooth/outputs/transformer_alpha",
+  "model": {
+    "name": "transformer",
+    "params": {
+      "d_model": 256,
+      "nhead": 4,
+      "num_layers": 8,
+      "dim_feedforward": 512,
+      "dropout": 0.4,
+      "input_dropout": 0.1,
+      "pooling": "mean"
+    }
+  }
+}
